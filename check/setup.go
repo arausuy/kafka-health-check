@@ -30,10 +30,10 @@ func (check *HealthCheck) connect(firstConnection bool, stop <-chan struct{}) er
 func (check *HealthCheck) tryConnectOnce(createIfMissing *bool) error {
 	pauseTime := check.config.retryInterval
 	// connect to kafka cluster
-	connectString := []string{fmt.Sprintf("localhost:%d", check.config.brokerPort)}
+	connectString := []string{fmt.Sprintf("%s:%d", check.config.brokerHost, check.config.brokerPort)}
 	err := check.broker.Dial(connectString, check.brokerConfig())
 	if err != nil {
-		log.Printf("unable to connect to broker, retrying in %s (%s)", pauseTime.String(), err)
+		log.Printf("unable to connect to broker at %s, retrying in %s (%s)", connectString, pauseTime.String(), err)
 		return err
 	}
 

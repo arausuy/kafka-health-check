@@ -29,6 +29,7 @@ type HealthCheckConfig struct {
 	retryInterval    time.Duration
 	topicName        string
 	brokerID         uint
+	brokerHost       string
 	brokerPort       uint
 	zookeeperConnect string
 	statusServerPort uint

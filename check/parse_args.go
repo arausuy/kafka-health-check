@@ -12,6 +12,7 @@ import (
 // ParseCommandLineArguments parses the command line arguments.
 func (check *HealthCheck) ParseCommandLineArguments() {
 	flag.UintVar(&check.config.brokerID, "broker-id", 0, "id of the Kafka broker to health check")
+	flag.StringVar(&check.config.brokerHost, "broker-host", "localhost", "hostname of the Kafka broker to health check")
 	flag.UintVar(&check.config.brokerPort, "broker-port", 9092, "Kafka broker port")
 	flag.UintVar(&check.config.statusServerPort, "server-port", 8000, "port to open for http health status queries")
 	flag.StringVar(&check.config.zookeeperConnect, "zookeeper", "", "ZooKeeper connect string (e.g. node1:2181,node2:2181,.../chroot)")
