@@ -15,8 +15,8 @@ func main() {
 	healthCheck.ParseCommandLineArguments()
 
 	stop, awaitCheck := addShutdownHook()
-	brokerUpdates, clusterUpdates := make(chan string, 2), make(chan string, 2)
-	go healthCheck.ServeHealth(brokerUpdates, clusterUpdates, stop)
+	brokerUpdates, clusterUpdates, zookeeperUpdates := make(chan string, 2), make(chan string, 2), make(chan string, 2)
+	go healthCheck.ServeHealth(brokerUpdates, clusterUpdates, zookeeperUpdates, stop)
 	healthCheck.CheckHealth(brokerUpdates, clusterUpdates, stop)
 	awaitCheck.Done()
 }

@@ -13,6 +13,7 @@ const (
 func (check *HealthCheck) checkBrokerZookeeperStatus() string {
 	brokerId := int(check.config.brokerID)
 	brokerPath := "/brokers/ids/" + strconv.Itoa(brokerId)
+
 	return check.getStatus(brokerPath)
 }
 

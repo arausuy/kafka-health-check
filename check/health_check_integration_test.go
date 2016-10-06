@@ -28,6 +28,9 @@ func Test_checkHealth_WhenBrokerInMetadataAndProducedMessageIsConsumed_ReportsHe
 	clusterUpdates := make(chan string)
 	defer close(clusterUpdates)
 
+	zookeeperUpdates := make(chan string)
+	defer close(zookeeperUpdates)
+
 	awaitCheck.Add(1)
 	go func() {
 		check.CheckHealth(brokerUpdates, clusterUpdates, stop)

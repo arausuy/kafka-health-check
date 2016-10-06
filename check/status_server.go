@@ -8,8 +8,11 @@ import (
 	"net/http"
 )
 
-// ServeHealth answers http queries for broker and cluster health.
-func (check *HealthCheck) ServeHealth(brokerUpdates <-chan string, clusterUpdates <-chan string, stop <-chan struct{}) {
+// ServeHealth answers http queries for broker and cluster health and zookeeper membership.
+func (check *HealthCheck) ServeHealth(brokerUpdates <-chan string,
+	clusterUpdates <-chan string,
+	zookeeperUpdates <-chan string,
+	stop <-chan struct{}) {
 	port := check.config.statusServerPort
 
 	statusServer := func(name, path, errorStatus string, updates <-chan string) {
@@ -47,6 +50,7 @@ func (check *HealthCheck) ServeHealth(brokerUpdates <-chan string, clusterUpdate
 	http.DefaultServeMux = http.NewServeMux()
 	statusServer("broker", "/", unhealthy, brokerUpdates)
 	statusServer("cluster", "/cluster", red, clusterUpdates)
+	statusServer("zookeeper", "/member", unavailable, zookeeperUpdates)
 
 	listener, err := net.Listen("tcp", fmt.Sprintf(":%d", port))
 	if err != nil {

@@ -18,7 +18,7 @@ import (
 )
 
 func Test_ServeHealth_DefaultBrokerStatusIsUnhealthy(t *testing.T) {
-	awaitServer, stop, _, _ := newServerSetup()
+	awaitServer, stop, _, _, _ := newServerSetup()
 
 	response := waitForResponse("http://localhost:8000/", t)
 
@@ -30,7 +30,7 @@ func Test_ServeHealth_DefaultBrokerStatusIsUnhealthy(t *testing.T) {
 }
 
 func Test_ServeHealth_DefaultClusterStatusIsRed(t *testing.T) {
-	awaitServer, stop, _, _ := newServerSetup()
+	awaitServer, stop, _, _, _ := newServerSetup()
 
 	response := waitForResponse("http://localhost:8000/cluster", t)
 
@@ -42,7 +42,7 @@ func Test_ServeHealth_DefaultClusterStatusIsRed(t *testing.T) {
 }
 
 func Test_ServeHealth_UpdatesBrokerStatus(t *testing.T) {
-	awaitServer, stop, brokerUpdates, _ := newServerSetup()
+	awaitServer, stop, brokerUpdates, _, _ := newServerSetup()
 
 	brokerUpdates <- healthy
 
@@ -54,7 +54,7 @@ func Test_ServeHealth_UpdatesBrokerStatus(t *testing.T) {
 }
 
 func Test_ServeHealth_UpdatesClusterBrokerStatus(t *testing.T) {
-	awaitServer, stop, _, clusterUpdates := newServerSetup()
+	awaitServer, stop, _, clusterUpdates, _ := newServerSetup()
 
 	clusterUpdates <- green
 
@@ -65,14 +65,14 @@ func Test_ServeHealth_UpdatesClusterBrokerStatus(t *testing.T) {
 	awaitServer.Wait()
 }
 
-func newServerSetup() (awaitServer *sync.WaitGroup, stop chan struct{}, brokerUpdates, clusterUpdates chan string) {
+func newServerSetup() (awaitServer *sync.WaitGroup, stop chan struct{}, brokerUpdates, clusterUpdates, zookeeperUpdates chan string) {
 	check := newTestCheck()
 	awaitServer = &sync.WaitGroup{}
 	stop = make(chan struct{})
-	brokerUpdates, clusterUpdates = make(chan string, 2), make(chan string, 2)
+	brokerUpdates, clusterUpdates, zookeeperUpdates = make(chan string, 2), make(chan string, 2), make(chan string, 2)
 	awaitServer.Add(1)
 	go func() {
-		check.ServeHealth(brokerUpdates, clusterUpdates, stop)
+		check.ServeHealth(brokerUpdates, clusterUpdates, zookeeperUpdates, stop)
 		awaitServer.Done()
 	}()
 
