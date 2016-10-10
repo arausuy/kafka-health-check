@@ -50,7 +50,7 @@ func (check *HealthCheck) ServeHealth(brokerUpdates <-chan string,
 	http.DefaultServeMux = http.NewServeMux()
 	statusServer("broker", "/", unhealthy, brokerUpdates)
 	statusServer("cluster", "/cluster", red, clusterUpdates)
-	statusServer("zookeeper", "/member", unavailable, zookeeperUpdates)
+	statusServer("zookeeper", "/membership", unavailable, zookeeperUpdates)
 
 	listener, err := net.Listen("tcp", fmt.Sprintf(":%d", port))
 	if err != nil {

@@ -6,8 +6,8 @@ import (
 )
 
 const (
-	available   = "green"
-	unavailable = "red"
+	available   = "available"
+	unavailable = "unavailable"
 )
 
 func (check *HealthCheck) checkBrokerZookeeperStatus() string {

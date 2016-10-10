@@ -53,6 +53,18 @@ func Test_ServeHealth_UpdatesBrokerStatus(t *testing.T) {
 	awaitServer.Wait()
 }
 
+func Test_ServeHealth_ZookeeperStatus(t *testing.T) {
+	awaitServer, stop, brokerUpdates, _, _ := newServerSetup()
+
+	brokerUpdates <- available
+
+	if !waitForExpectedResponse("http://localhost:8000/membership", healthy) {
+		t.Errorf("Broker membership was not reported as %s within timeout", healthy)
+	}
+	close(stop)
+	awaitServer.Wait()
+}
+
 func Test_ServeHealth_UpdatesClusterBrokerStatus(t *testing.T) {
 	awaitServer, stop, _, clusterUpdates, _ := newServerSetup()
 
